@@ -38,7 +38,7 @@ class ShortCodeEndpoint(APIView):
             short_code = generate_and_save_next_short_code(full_url)
         return Response({"shortcode": short_code.short_code}, status=status.HTTP_201_CREATED)
 
-    def get(self, request, short_code):
+    def get(self, request, short_code=None):
         try:
             short_code = ShortCode.objects.get(
                 short_code=short_code
