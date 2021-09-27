@@ -37,12 +37,12 @@ http://localhost:8000/api/short_code/shorten/
 Create new shortcode. In body provide "url" (required), "shortcode" (optional).
 
 `GET Redirect external link by shortcode`
-http://localhost:8000/api/short_code/{shortcode}
+http://localhost:8000/api/short_code/000000
 
 Redirect user to saved url by providing shortcode.
 
 `GET Statistic of shortcode usage`
-http://localhost:8000/api/short_code/{shortcode}/stats
+http://localhost:8000/api/short_code/000000/stats
 
 Show statistic of shortcode.
 
