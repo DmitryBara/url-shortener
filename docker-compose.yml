@@ -1,0 +1,33 @@
+version: '3.7'
+
+volumes:
+  postgres_data:
+
+services:
+  django_app:
+    build: .
+    command: >
+      sh -c "python3 manage.py test
+      && python3 manage.py migrate
+      && python3 manage.py runserver 0.0.0.0:8000
+      && uvicorn3 main:app --reload --port 8000 --host 0.0.0.0"
+    restart: always
+    ports:
+      - 8000:8000
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+    depends_on:
+      - postgres
+    container_name: django_app_container_wEa2
+
+  postgres:
+    image: postgres:12.0-alpine
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/data/db
+    container_name: postgres_container_oiJk
