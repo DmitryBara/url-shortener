@@ -32,6 +32,8 @@ class ShortCodeSerializer(serializers.ModelSerializer):
         full_url = attrs.get('full_url', None)
         if not full_url:
             raise CustomAPIException("Url not present", 400)
+        if len(full_url) > 300:
+            raise CustomAPIException("Url is too long. Maximum allowed 300 symbols", 400)
         if type(full_url) is not str:
             raise CustomAPIException("The provided url is invalid",  412)
         try:
@@ -41,6 +43,8 @@ class ShortCodeSerializer(serializers.ModelSerializer):
 
         short_code = attrs.get('short_code', None)
         if short_code:
+            if len(short_code) > 30:
+                raise CustomAPIException("Short code is too long. Maximum allowed 30 symbols", 400)
             if type(short_code) is not str:
                 raise CustomAPIException("The provided short code is invalid", 412)
             for symbol in short_code:
