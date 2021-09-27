@@ -1,65 +1,51 @@
-# Book Market
+# Run the app
 
-RESTful API service for e-commerce
+Be sure that next ports are available: 8000 - for Django app; 5432 - for PostgreSQL. 
+Close all application, databases, containers etc on ports if they are conflict. 
+Check that you have docker and docker-compose.
 
-On initialization django app will be created few model instances.
-Model profile is expansion of standart auth.user model.
-There are 2 profile without subscribe, you could manually tested funcionallity.
+`docker-compose up --build`
+
+Application will be available at: `http://localhost:8000/api/short_code`
+
+Configuration parametres could be changed in `settings.py` file
+
+ALPHABET (str 1-300 symbols) - all available symbols
+REQUESTED_SHORT_CODE_LENGTH (int 1-30) - requested length of generated string 
+CHECK_SHORT_CODE_LENGTH_PROVIDED_BY_USER (boolean) - check length of string provided by user or not
+
+* When you make some changes they will be automatically delivered inside docker container. 
+* You could change configuration parameters and see them impact to generated code.
+* Tests are running automatically. If you need run test manually.
+   docker exec -it django_app_container_wEa2 python3 manage.py test
+
+P.S. This solution based on converting decimal number to another digit base system.
+For details see `short_code/converter.py`
 
 
-# Run application
-
-You had two options to run this application
-
-1. With docker: `docker-compose up` (docker should be installed)
-2. With makefile (python 3 and unix required)
-``` 
-python3 -m venv venv
-source venv/bin/activate
-make all
-```
-
-Application will be available at http://127.0.0.1:8000/
-
+TODO:
+1. Add queue mechanism for manage write operations (RabbitMQ)
+2. Add cache layer for fast access to external links (Redis)
+3. Add documentation for API (Swagger)
 
 
 # Request example
 
-`POST /api/userprofile/create/`
+`POST Create new shortcode record`
+http://localhost:8000/api/short_code/shorten/
 
-http://localhost:8000/api/userprofile/create/
+Create new shortcode. In body provide "url" (required), "shortcode" (optional).
 
-Создание нового пользователя. В теле запроса указать username, password
+`GET Redirect external link by shortcode`
+http://localhost:8000/api/short_code/000000
 
-`GET /api/userprofile/all`
+Redirect user to saved url by providing shortcode.
 
-http://localhost:8000/api/userprofile/all
+`GET Statistic of shortcode usage`
+http://localhost:8000/api/short_code/000000/stats
 
-Информация по всем пользователям
+Show statistic of shortcode.
 
-`GET /api/userprofile/{profile_id}`
-
-http://localhost:8000/api/userprofile/2
-
-Информация по конкретному пользователю
-
-`POST /api/userprofile/subscribe/`
-
-http://localhost:8000/api/userprofile/subscribe/
-
-Создание подписки для пользователя. В теле запроса указать profile_id для которого создается подписка
-
-`GET /api/book/{book_id}/?token=`
-
-http://localhost:8000/api/book/2/?token=0c302b15-39c0-4cfc-8f99-2c56b8d61b97
-
-Информация по конкертной книге. В query-параметре необходимо передать token, полученный при создании пользователя
-
-`GET /api/book/all`
-
-http://localhost:8000/api/book/all
-
-Краткая информация по всем книгам
 
 
 
